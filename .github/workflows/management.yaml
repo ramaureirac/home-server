@@ -1,0 +1,17 @@
+name: "Remote management"
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'A shell command for remote execution'
+        default: 'sudo apt update && sudo apt upgrade -y'
+        required: true
+
+jobs:
+  command:
+    runs-on: "webmauri"
+    
+    steps:
+    - name: "Command execution"
+      run: "cd /srv && ${{ github.event.inputs.command }}"

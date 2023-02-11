@@ -1,0 +1,123 @@
+version: "3"
+services:
+
+  adguard:
+    container_name: "adguard"
+    image: "adguard/adguardhome:latest"
+    ports:
+      - "53:53/udp"
+      - "5000:3000"
+    volumes:
+      - "/srv/adguard/work/:/opt/adguardhome/work/"
+      - "/srv/adguard/conf/:/opt/adguardhome/conf/"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.100"
+
+  wireguard:
+    container_name: "wireguard"
+    image: "weejewel/wg-easy:latest"
+    ports:
+      - "23:51820/udp"
+    volumes:
+      - "/srv/wireguard/:/etc/wireguard/"
+    cap_add:
+      - "NET_ADMIN"
+      - "SYS_MODULE"
+    environment:
+      WG_HOST: "${SRV_DUCKDNS_SUBDOMAIN}.duckdns.org"
+      WG_PORT: "23"
+      WG_DEFAULT_DNS: "10.100.0.100"
+      PASSWORD: "${SRV_ADMIN_PASSWORD}"
+    privileged: true
+    depends_on:
+      - "adguard"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.101"
+
+  nginx:
+    container_name: "nginx"
+    image: "nginx:latest"
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "/srv/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+    #  - "/srv/nginx/certbot/conf:/etc/letsencrypt"
+    #  - "/srv/nginx/certbot/www:/var/www/certbot"
+    restart: "always"
+    depends_on:
+      - adguard
+      - plex
+      - filebrowser
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.102"
+
+  spigot:
+    container_name: "spigot"
+    image: "nimmis/spigot:latest"
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "true"
+      SPIGOT_VER: "1.19.3"
+      MC_MAXMEM: "8g"
+      MC_MINMEM: "3g"
+    volumes:
+      - "/srv/spigot:/minecraft"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.103"
+
+  duckdns:
+    container_name: "duckdns"
+    image: "linuxserver/duckdns:latest"
+    environment:
+      TZ: "America/Santiago"
+      SUBDOMAINS: "${SRV_DUCKDNS_SUBDOMAIN}"
+      TOKEN: "${SRV_DUCKDNS_TOKEN}"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.104"
+
+  plex:
+    container_name: "plex"
+    image: "plexinc/pms-docker:latest"
+    ports:
+      - "32400:32400/tcp"
+    environment:
+      TZ: "America/Santiago"
+      PLEX_CLAIM: "${SRV_PLEX_TOKEN}"
+      ADVERTISE_IP: "http://plex.${SRV_DUCKDNS_SUBDOMAIN}.duckdns.org"
+    devices:
+      - "/dev/dri:/dev/dri"
+    volumes:
+      - "/srv/plex/config:/config"
+      - "/srv/plex/transcode:/transcode"
+      - "/external/Plex:/media"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.105"
+
+  filebrowser:
+    container_name: "filebrowser"
+    image: "filebrowser/filebrowser:s6"
+    ports:
+      - "8080:80"
+    volumes:
+      - "/srv/filebrowser/database:/database"
+      - "/srv/filebrowser/config:/config"
+      - "/srv/filebrowser/media:/srv"
+      - "/external/Plex:/srv/Plex Library"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.106"
+
+networks:
+  mauri-net:
+    name: "mauri-net"
+    ipam:
+      config:
+        - subnet: "10.100.0.0/24"
