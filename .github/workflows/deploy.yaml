@@ -41,5 +41,6 @@ jobs:
           sudo mkdir -p /srv/nginx/conf /srv/nginx/html
           envsubst '${SRV_DUCKDNS_SUBDOMAIN}' < conf/certbot.nginx.conf | sudo tee /srv/nginx/conf/certbot.nginx.conf > /dev/null
           envsubst '${SRV_DUCKDNS_SUBDOMAIN}' < conf/nginx.conf | sudo tee /srv/nginx/conf/nginx.conf > /dev/null
+          envsubst '${SRV_DUCKDNS_SUBDOMAIN} ${SRV_ADMIN_EMAIL}' < certs/gencerts.sh | sudo tee /srv/nginx/gencerts.sh > /dev/null
           envsubst < docker-compose.yaml | sudo tee /srv/docker-compose.yaml > /dev/null
           sudo docker compose -f /srv/docker-compose.yaml up -d

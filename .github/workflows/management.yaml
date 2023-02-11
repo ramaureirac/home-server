@@ -14,4 +14,4 @@ jobs:
     
     steps:
     - name: "Command execution"
-      run: "cd /srv && ${{ github.event.inputs.command }}"
+      run: ${{ github.event.inputs.command }}

@@ -41,16 +41,15 @@ services:
     image: "nginx:latest"
     ports:
       - "443:443"
-      - "80:80"
     volumes:
       - "/srv/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
-    #  - "/srv/nginx/certbot/conf:/etc/letsencrypt"
-    #  - "/srv/nginx/certbot/www:/var/www/certbot"
+      - "/srv/nginx/certbot/conf:/etc/letsencrypt"
     restart: "always"
     depends_on:
       - adguard
       - plex
       - filebrowser
+      - nginx-proxy
     networks:
       mauri-net:
         ipv4_address: "10.100.0.102"
@@ -114,6 +113,19 @@ services:
     networks:
       mauri-net:
         ipv4_address: "10.100.0.106"
+
+  nginx-proxy:
+    container_name: "nginx-proxy"
+    image: "nginx:latest"
+    ports:
+      - "80:80"
+    volumes:
+      - "/srv/nginx/conf/certbot.nginx.conf:/etc/nginx/nginx.conf"
+      - "/srv/nginx/certbot/conf:/etc/letsencrypt"
+      - "/srv/nginx/certbot/www:/var/www/certbot"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.107"
 
 networks:
   mauri-net:
