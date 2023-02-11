@@ -38,3 +38,11 @@ Disable ```systemd-resolved.service``` in order to use AdGuard and remember to r
 Finally, edit ```.env``` and ```docker-compose.yaml``` files according to your preferences and run the content
 
     sudo docker compose --env-file .env up -d
+
+### Enable SSL
+
+Once your Docker containers are up and running, run ```gencerts.sh``` script
+
+    export SRV_ADMIN_EMAIL="your-email"
+    export SRV_DUCKDNS_SUBDOMAIN="your-domain"
+    sh certs/gencerts.sh
