@@ -113,7 +113,7 @@ services:
       - "/srv/filebrowser/database:/database"
       - "/srv/filebrowser/config:/config"
       - "/srv/filebrowser/media:/srv"
-      - "/external/Plex:/external/Plex" # << use ln -sf inside filebrowser in order to act as a shared folder!
+      - "/external/Plex:/srv/Shared/Plex Library" # << use ln -sf inside filebrowser in order to act as a shared folder!
     networks:
       mauri-net:
         ipv4_address: "10.100.0.106"
