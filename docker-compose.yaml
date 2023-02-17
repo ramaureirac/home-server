@@ -86,6 +86,10 @@ services:
     image: "plexinc/pms-docker:latest"
     ports:
       - "32400:32400/tcp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
     environment:
       TZ: "America/Santiago"
       PLEX_CLAIM: "${SRV_PLEX_TOKEN}"
@@ -109,7 +113,7 @@ services:
       - "/srv/filebrowser/database:/database"
       - "/srv/filebrowser/config:/config"
       - "/srv/filebrowser/media:/srv"
-      - "/external/Plex:/srv/Plex Library"
+      - "/external/Plex:/external/Plex" # << use ln -sf inside filebrowser in order to act as a shared folder!
     networks:
       mauri-net:
         ipv4_address: "10.100.0.106"
