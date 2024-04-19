@@ -1,4 +1,3 @@
-version: "3"
 services:
 
   adguard:
@@ -36,20 +35,20 @@ services:
       mauri-net:
         ipv4_address: "10.100.0.101"
 
-  nginx:
-    container_name: "nginx"
+  nginx-ssl:
+    container_name: "nginx-ssl"
     image: "nginx:latest"
     ports:
       - "443:443"
     volumes:
-      - "/srv/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+      - "/srv/nginx/conf/main.nginx.conf:/etc/nginx/nginx.conf"
       - "/srv/nginx/certbot/conf:/etc/letsencrypt"
     restart: "always"
     depends_on:
       - adguard
       - plex
       - filebrowser
-      - nginx-proxy
+      - nginx
     networks:
       mauri-net:
         ipv4_address: "10.100.0.102"
@@ -118,8 +117,8 @@ services:
       mauri-net:
         ipv4_address: "10.100.0.106"
 
-  nginx-proxy:
-    container_name: "nginx-proxy"
+  nginx:
+    container_name: "nginx"
     image: "nginx:latest"
     ports:
       - "80:80"

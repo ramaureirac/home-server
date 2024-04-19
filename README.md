@@ -1,6 +1,6 @@
 # Home Sever Instance
 
-This repo contains a simple backup for my server's docker-compose. Fell free to use it if you wanna replicate all my configuration in your own linux instance, please note that you will need Docker for this process, but alternatively you should be able to use Podman as well or even transform everything into KubeConfig files.
+This repo contains a simple backup for my server's docker-compose. Fell free to use it if you wanna replicate all my configuration in your own linux instance, please note that you will need Docker for this process.
 
 ![CPU](https://img.shields.io/badge/CPU-i3_5005U-blue.svg?style=flat-square)
 ![RAM](https://img.shields.io/badge/RAM-16GB-green.svg?style=flat-square)
@@ -17,32 +17,27 @@ This repo contains a simple backup for my server's docker-compose. Fell free to 
 - Plex Home Server (streaming)
 - Filebrowser (filesharing)
 
-### Installation
+### Install on Ubuntu Server 22.04
 
-First, clone this repo and prepare your Ubuntu instance by running the following script
+First clone this repo inside your server.
 
-    sudo sudo apt update && sudo apt upgrade -y && sudo apt install -y ca-certificates curl gnupg lsb-release build-essential
+    git clone https://github.com/ramaureirac/home-server
 
-Also, install latest Docker version if needed
+Edit docker-compose file according to your needs.
 
-    sudo mkdir -p /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    sudo systemctl enable --now docker.service
+    vim src/docker/docker-compose.yaml
 
-Disable ```systemd-resolved.service``` in order to use AdGuard and remember to re-configure ```/etc/resolv.conf``` file
+Fill and export some variables:
 
-    sudo systemctl disable --now systemd-resolved.service
-    sudo rm -f /etc/resolv.conf && sudo echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf >> /dev/null
+    vim src/env/variables.env
+    export $(xargs < src/env/variables.env)
+    
+Run the install.sh scripts. Please note this will install Docker and disable systemd-resolved.service
 
-Finally, edit ```.env``` and ```docker-compose.yaml``` files according to your preferences and run the content
+    bash ./install.sh
 
-    sudo docker compose --env-file .env up -d
+Create/Update SSL certificates. This requieres public internet access to Nginx:
 
-### Enable SSL
+    bash /srv/scripts/gencerts.sh
 
-Once your Docker containers are up and running, run ```gencerts.sh``` script
-
-    export SRV_ADMIN_EMAIL="your-email"
-    export SRV_DUCKDNS_SUBDOMAIN="your-domain"
-    sh certs/gencerts.sh
+Once completed make sure to configure all your services and restart Docker!
