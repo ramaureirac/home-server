@@ -14,7 +14,7 @@ This repo contains a simple backup for my server's docker-compose. Fell free to 
 - NGINX Instance (http)
 - Minecraft Server (spigot)
 - DuckDns (ddns)
-- Plex Home Server (streaming)
+- Emby Server (streaming)
 - Filebrowser (filesharing)
 
 ### Install on Ubuntu Server 22.04

@@ -27,9 +27,9 @@ fi
 
 # Installing Docker Compose and configuration files
 sudo mkdir -p /srv/nginx/conf /srv/scripts
-envsubst '${SRV_DUCKDNS_SUBDOMAIN}' < src/templates/certbot.nginx.conf.tpl | sudo tee /srv/nginx/conf/certbot.nginx.conf > /dev/null
-envsubst '${SRV_DUCKDNS_SUBDOMAIN}' < src/templates/main.nginx.conf.tpl | sudo tee /srv/nginx/conf/main.nginx.conf > /dev/null
-envsubst '${SRV_DUCKDNS_SUBDOMAIN} ${SRV_ADMIN_EMAIL}' < src/templates/gencerts.sh.tpl | sudo tee /srv/scripts/gencerts.sh > /dev/null
+envsubst '${SRV_DUCKDNS_SUBDOMAIN}' < src/templates/certbot.nginx.conf | sudo tee /srv/nginx/conf/certbot.nginx.conf > /dev/null
+envsubst '${SRV_DUCKDNS_SUBDOMAIN}' < src/templates/main.nginx.conf | sudo tee /srv/nginx/conf/main.nginx.conf > /dev/null
+envsubst '${SRV_DUCKDNS_SUBDOMAIN} ${SRV_ADMIN_EMAIL}' < src/templates/gencerts.sh | sudo tee /srv/scripts/gencerts.sh > /dev/null
 envsubst < src/docker/docker-compose.yaml | sudo tee /srv/docker-compose.yaml > /dev/null
 
 

@@ -46,7 +46,7 @@ services:
     restart: "always"
     depends_on:
       - adguard
-      - plex
+      - emby
       - filebrowser
       - nginx
     networks:
@@ -80,25 +80,20 @@ services:
       mauri-net:
         ipv4_address: "10.100.0.104"
 
-  plex:
-    container_name: "plex"
-    image: "plexinc/pms-docker:latest"
+  emby:
+    container_name: "emby"
+    image: "emby/embyserver"
     ports:
-      - "32400:32400/tcp"
-      - "32410:32410/udp"
-      - "32412:32412/udp"
-      - "32413:32413/udp"
-      - "32414:32414/udp"
+      - "8096:8096/tcp"
     environment:
       TZ: "America/Santiago"
-      PLEX_CLAIM: "${SRV_PLEX_TOKEN}"
-      ADVERTISE_IP: "http://plex.${SRV_DUCKDNS_SUBDOMAIN}.duckdns.org"
     devices:
       - "/dev/dri:/dev/dri"
     volumes:
       - "/srv/plex/config:/config"
-      - "/srv/plex/transcode:/transcode"
-      - "/external/Plex:/media"
+      - "/external/Media/Shows:/mnt/shows"
+      - "/external/Media/Movies:/mnt/movies"
+      - "/external/Media/Music:/mnt/music"
     networks:
       mauri-net:
         ipv4_address: "10.100.0.105"
@@ -112,7 +107,7 @@ services:
       - "/srv/filebrowser/database:/database"
       - "/srv/filebrowser/config:/config"
       - "/srv/filebrowser/media:/srv"
-      - "/external/Plex:/srv/Shared/Plex Library" # << use ln -sf inside filebrowser in order to act as a shared folder!
+      - "/external/Media:/srv/Shared/Emby Library" # << use ln -sf inside filebrowser in order to act as a shared folder!
     networks:
       mauri-net:
         ipv4_address: "10.100.0.106"
