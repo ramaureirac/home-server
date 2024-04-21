@@ -33,6 +33,5 @@ envsubst '${SRV_DUCKDNS_SUBDOMAIN} ${SRV_ADMIN_EMAIL}' < src/templates/gencerts.
 envsubst < src/docker/docker-compose.yaml | sudo tee /srv/docker-compose.yaml > /dev/null
 
 
-# Start containers
 cd /srv
 sudo docker compose up -d

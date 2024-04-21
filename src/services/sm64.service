@@ -1,0 +1,18 @@
+[Unit]
+Description=A sm64ex-coop game server
+Wants=network.target
+After=network.target
+
+
+[Service]
+ProtectHome=true
+ProtectSystem=full
+WorkingDirectory=/opt/sm64
+Environment="DISPLAY=:64"
+
+ExecStart=/opt/sm64/sm64.us.f3dex2e --server 7777 --savepath /opt/sm64/config
+SuccessExitStatus=0 1
+
+
+[Install]
+WantedBy=sm64-xvfb.service          

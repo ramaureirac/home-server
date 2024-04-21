@@ -7,37 +7,53 @@ This repo contains a simple backup for my server's docker-compose. Fell free to 
 ![OS](https://img.shields.io/badge/OS-Ubuntu_22.04-orange.svg?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-20.10-lightblue.svg?style=flat-square)
 
-### Content of this Docker Compose
+## Content of this repo
 
-- AdGuard Home (adblock)
-- Easy WireGuard (vpn)
-- NGINX Instance (http)
-- Minecraft Server (spigot)
-- DuckDns (ddns)
-- Emby Server (streaming)
-- Filebrowser (filesharing)
+| Docker Services               | Systemd Services                  |
+| ----------------------------- | --------------------------------- |
+| AdGuard Home (adblock)        | SM64Ex Coop (games)               |
+| Eady WireGuard (vpn)          |                                   |
+| NGINX Instance (http)         |                                   |
+| NGINX Instance SSL (https)    |                                   |
+| Minecraft Server (games)      |                                   |
+| Palworld Server (games)       |                                   |
+| DuckDNS (ddns)                |                                   |
+| Emby Media Server (streaming) |                                   |
+| FileBrowser (filesharing)     |                                   |
 
-### Install on Ubuntu Server 22.04
+### Overview
 
-First clone this repo inside your server.
+![Overview](./img/overview.png)
 
-    git clone https://github.com/ramaureirac/home-server
+### Additional notes
 
-Edit docker-compose file according to your needs.
+1.  Default NGINX forwards into NGINX SSL using `http 301`. It also act as an endpoint for Let's Encrypt.
+2.  Changes require adjustments inside `src/templates/main.nginx.conf` and `src/templates/gencerts.sh`.
+3.  Some services require pre-configuration.
+    - AdGuard: Disable `systemd-resolved` service from your host machine.
+4.  Some services require post-configuration.
+    - AdGuard: Create a new administrator and set webserver port to 3000 then restart.
+    - WireGuard: Requires to configure AdGuard and restart.
+    - Emby: Create a new user and mount your media library.
+    - FileBrowser: Change administrator user. Default credentials are `admin:admin`.
 
-    vim src/docker/docker-compose.yaml
+## Install Docker Services
 
 Fill and export some variables:
 
     vim src/env/variables.env
     export $(xargs < src/env/variables.env)
     
-Run the install.sh scripts. Please note this will install Docker and disable systemd-resolved.service
+Run the install script. Please note this will install Docker and disable systemd-resolved.service
 
-    bash ./install.sh
+    bash install-dockers.sh             # install docker-compose.yaml
+    bash /srv/scripts/gencerts.sh       # create ssl certificates
 
-Create/Update SSL certificates. This requieres public internet access to Nginx:
 
-    bash /srv/scripts/gencerts.sh
+## Install Systemd Services
 
-Once completed make sure to configure all your services and restart Docker!
+Run the install script. Please check script before running for pre-requirements.
+
+    bash install-sm64ex-coop.sh
+
+Once completed make sure to test and do post-configuration if needed!

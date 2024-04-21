@@ -1,0 +1,17 @@
+[Unit]
+Description=A Xvfb service for sm64ex-coop
+Wants=network.target
+After=network.target
+
+
+[Service]
+ProtectHome=true
+ProtectSystem=full
+Environment="DISPLAY=:64"
+
+ExecStart=/usr/bin/Xvfb $DISPLAY
+SuccessExitStatus=0 1
+
+
+[Install]
+WantedBy=multi-user.target   

@@ -5,7 +5,7 @@ services:
     image: "adguard/adguardhome:latest"
     ports:
       - "53:53/udp"
-      - "5000:3000"
+      - "3000:3000"
     volumes:
       - "/srv/adguard/work/:/opt/adguardhome/work/"
       - "/srv/adguard/conf/:/opt/adguardhome/conf/"
@@ -124,6 +124,32 @@ services:
     networks:
       mauri-net:
         ipv4_address: "10.100.0.107"
+
+  palworld:
+    container_name: "palworld"
+    image: "thijsvanloef/palworld-server-docker:latest"
+    ports:
+      - "8211:8211/udp"
+      - "27015:27015/udp"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      PORT: 8211
+      PLAYERS: 8
+      SERVER_PASSWORD: "passwordcilla"
+      MULTITHREADING: "true"
+      RCON_ENABLED: "true"
+      RCON_PORT: 25575
+      TZ: "America/Santiago"
+      ADMIN_PASSWORD: "${SRV_ADMIN_PASSWORD}"
+      COMMUNITY: "false"
+      SERVER_NAME: "MauriLand"
+      SERVER_DESCRIPTION: "Bienvenid@s a MauriLand!"
+    volumes:
+      - "/srv/palworld:/palworld"
+    networks:
+      mauri-net:
+        ipv4_address: "10.100.0.108"
 
 networks:
   mauri-net:
