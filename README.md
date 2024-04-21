@@ -38,16 +38,11 @@ This repo contains a simple backup for my server's docker-compose. Fell free to 
     - FileBrowser: Change administrator user. Default credentials are `admin:admin`.
 
 ## Install Docker Services
-
-Fill and export some variables:
-
-    vim src/env/variables.env
-    export $(xargs < src/env/variables.env)
     
 Run the install script. Please note this will install Docker and disable systemd-resolved.service
 
     bash install-dockers.sh             # install docker-compose.yaml
-    bash /srv/scripts/gencerts.sh       # create ssl certificates
+    bash /srv/scripts/gencerts.sh       # create ssl certificates (if needed)
 
 
 ## Install Systemd Services
